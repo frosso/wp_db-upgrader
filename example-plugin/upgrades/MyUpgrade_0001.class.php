@@ -1,6 +1,6 @@
 <?php
 
-class Upgrade_0001 extends UpgradeScriptModel {
+class MyUpgrade_0001 extends UpgradeScriptModel {
     /**
      * Initial system version
      *

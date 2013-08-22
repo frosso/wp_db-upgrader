@@ -23,7 +23,6 @@ abstract class UpgraderController {
     protected $upgrades_folder = '/upgrades';
 
     function __construct( ) {
-
         register_activation_hook( $this->get_plugin( ), array(
             &$this,
             'plugin_activation'
@@ -58,8 +57,12 @@ abstract class UpgraderController {
 
     function plugin_activation( ) {
         if ( !is_plugin_active( $this->get_plugin( ) ) ) {
-            // first installation
-            if ( $this->get_db_version( ) === false ) {
+            // first installation or (activation and deactivation)
+            if ( $this->get_db_version( ) !== false ) {
+                // plugin previously installed, but deactivated
+                update_option( basename( $this->get_plugin( ) ) . '_version', $this->get_db_version( ) );
+            } else {
+                // plugin never installed before
                 update_option( basename( $this->get_plugin( ) ) . '_version', $this->files_version );
             }
         }

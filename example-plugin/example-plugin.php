@@ -3,7 +3,7 @@
  Plugin Name: Example plugin
  Plugin URI: https://github.com/frosso/wp_db-upgrader
  Description: Just an example about how to use wp_db-upgrader
- Version: 1.0
+ Version: 2.0
  Author: frosso
  License: Commercial
  */
@@ -14,7 +14,7 @@ define( 'MY_PLUGIN_PATH', dirname( MY_PLUGIN ) );
 
 define( 'MY_PLUGIN_FILES_VERSION', '2.0' );
 
-define( 'MY_UPGRADER_PATH', MY_PLUGIN_PATH . '/upgrader' );
+define( 'MY_UPGRADER_PATH', '/upgrader' );
 
 // let's include the library
 // you need to move it inside your plugin directory
@@ -27,17 +27,10 @@ class MyPluginUpgrader extends UpgraderController {
 
     protected $files_version = MY_PLUGIN_FILES_VERSION;
 
+    private $detected_previously_installed = true;
+
     public function __construct( ) {
         parent::__construct( );
-    }
-
-    function plugin_activation( ) {
-        parent::plugin_activation( );
-        
-        if ( version_compare( $this->get_db_version( ), '0.2', '<' ) ) {
-            // first installation
-            update_option( basename( $this->get_plugin( ) ) . '_version', $this->files_version );
-        }
     }
 
     // even more checks?
@@ -48,7 +41,7 @@ class MyPluginUpgrader extends UpgraderController {
         if ( $result === false ) {
             // let's check somewhere (in the DB?) which version is installed
             // might be a new installation, here you can do more check to guess the version installed
-            if ( true ) {
+            if ( $this->detected_previously_installed ) {
                 $return = true;
             }
             // otherwise it's a fresh installation
@@ -64,8 +57,8 @@ class MyPluginUpgrader extends UpgraderController {
         $version = parent::get_db_version( );
         if ( $version === false ) {
             // might be a new installation, here you can do more check to guess the version installed
-            if ( true ) {
-                $version = '0.1';
+            if ( $this->detected_previously_installed ) {
+                $version = '1.0';
             }
             // altrimenti vuol dire che è un'installazione fresca
         }
@@ -73,3 +66,5 @@ class MyPluginUpgrader extends UpgraderController {
     }
 
 }
+
+new MyPluginUpgrader( );

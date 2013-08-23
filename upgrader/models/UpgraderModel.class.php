@@ -115,7 +115,7 @@ class UpgraderModel {
 
                 $script = new $class_name( $this );
 
-                if ( $script instanceof UpgraderScriptModel && version_compare( $script->getToVersion( ), $newer_than, '>' ) ) {
+                if ( $script instanceof UpgraderScriptModel && version_compare( $script->get_to_version( ), $newer_than, '>' ) ) {
                     $result[] = $script;
                 } // if
             } // foreach
@@ -143,7 +143,7 @@ class UpgraderModel {
 
                 $script = new $class_name( $this );
 
-                if ( $script instanceof UpgraderScriptModel && $script->getGroup( ) == $group ) {
+                if ( $script instanceof UpgraderScriptModel && $script->get_group( ) == $group ) {
                     return $script;
                 } // if
             } // foreach
@@ -174,7 +174,7 @@ class UpgraderModel {
                 // TODO: controllare se ultima azione
                 $result = $script->$action( );
                 if ( $result === true ) {
-                    $actions = $script->getActions( );
+                    $actions = $script->get_actions( );
                     // let's find out if we are at the last action of the script
                     $action_number = count( $actions );
                     for ( $i = 0, $limit = count( $actions ); $i < $limit; ++$i ) {
@@ -188,13 +188,13 @@ class UpgraderModel {
                     // are we at the last action set?
                     if ( count( $actions ) == $action_number ) {
                         // we need to increase the plugin version number
-                        $this->set_version( $script->getToVersion( ) );
+                        $this->set_version( $script->get_to_version( ) );
                     }
                 }
                 return $result;
             } else {
                 if ( $action == 'no_action' ) {
-                    $this->set_version( $script->getToVersion( ) );
+                    $this->set_version( $script->get_to_version( ) );
                     return true;
                 } else {
                     return "Invalid action";

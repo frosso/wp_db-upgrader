@@ -142,9 +142,9 @@ class UpgraderManager {
                 $available_scripts = $plugin->get_scripts_disponibili( $plugin->get_db_version( ) );
 
                 foreach ( $available_scripts as $script ) {
-                    $group = $script->getGroup( );
-                    if ( $script->getActions( ) ) {
-                        foreach ( $script->getActions() as $action => $description ) {
+                    $group = $script->get_group( );
+                    if ( $script->get_actions( ) ) {
+                        foreach ( $script->get_actions() as $action => $description ) {
                             $response .= '<li upgrade_plugin="' . $plugin_name . '" upgrade_group="' . $group . '" upgrade_action="' . $action . '" class="not_done">' . $description . '</li>';
                         }
                     } else {

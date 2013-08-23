@@ -20,40 +20,35 @@ abstract class UpgraderScriptModel {
      *
      * @return array
      */
-    function getActions( ) {
+    function get_actions( ) {
         return null;
-    }// getActions
+    }// get_actions
 
     /**
      * Return from version
      *
      * @return float
      */
-    function getFromVersion( ) {
+    function get_from_version( ) {
         return $this->from_version;
-    }// getFromVersion
+    }// get_from_version
 
     /**
      * Return to version
      *
      * @return float
      */
-    function getToVersion( ) {
+    function get_to_version( ) {
         return $this->to_version;
-    }// getToVersion
+    }// get_to_version
 
     /**
      * Identify this uprade script
      *
      * @return string
      */
-    function getGroup( ) {
+    function get_group( ) {
         return (string)$this->from_version . '-' . (string)$this->to_version;
-    }// getGroup
-
-    function start_upgrade( ) {
-        // backup of db?
-        return true;
-    }
+    }// get_group
 
 }

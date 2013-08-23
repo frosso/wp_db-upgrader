@@ -23,15 +23,6 @@ abstract class UpgraderController {
     protected $upgrades_folder = '/upgrades';
 
     function __construct( ) {
-        register_activation_hook( $this->get_plugin( ), array(
-            &$this,
-            'plugin_activation'
-        ) );
-
-        add_action( 'wp_ajax_upgrader-next', array(
-            &$this,
-            'next'
-        ) );
 
         if ( !(defined( 'DOING_AJAX' ) && DOING_AJAX) ) {
             if ( is_admin( ) && !$this->validate_page( ) ) {
@@ -43,6 +34,10 @@ abstract class UpgraderController {
         }
 
         if ( $this->validate_page( ) && $this->worth_upgrading( ) ) {
+            add_action( 'wp_ajax_upgrader-next', array(
+                &$this,
+                'next'
+            ) );
             add_action( 'admin_footer', array(
                 &$this,
                 'admin_footer'
@@ -76,7 +71,7 @@ abstract class UpgraderController {
 
         $group = UpgradeModel::getScriptByGroup( $next_group, $this->get_upgrades_folder( ) );
 
-        if ( $group instanceof UpgradeScriptModel ) {
+        if ( $group instanceof UpgraderScriptModel ) {
             if ( $next_action == 'end_upgrade' )
                 $result = $group->$next_action( $this->get_plugin( ) );
             else
@@ -95,9 +90,11 @@ abstract class UpgraderController {
 
     function redirect( ) {
         if ( $this->worth_upgrading( ) && current_user_can( 'update_plugins' ) ) {
-            $url = admin_url( 'plugins.php?action=upgrade&what=' . basename( $this->get_plugin( ) ) );
-            wp_redirect( $url );
-            exit ;
+            if ( !isset( $_REQUEST['action2'] ) ) {
+                $url = admin_url( 'plugins.php?action2=upgrade&what=' . basename( $this->get_plugin( ) ) );
+                wp_redirect( $url );
+                exit ;
+            }
         }
     }
 
@@ -171,9 +168,9 @@ abstract class UpgraderController {
         if ( in_array( $pagenow, array( 'plugins.php' ) ) ) {
 
             // validate post type
-            if ( isset( $_GET['action'] ) && $_GET['action'] == 'upgrade' ) {
+            if ( isset( $_REQUEST['action2'] ) && $_REQUEST['action2'] == 'upgrade' ) {
 
-                if ( isset( $_GET['what'] ) && $_GET['what'] == basename( $this->get_plugin( ) ) ) {
+                if ( isset( $_REQUEST['what'] ) && $_REQUEST['what'] == basename( $this->get_plugin( ) ) ) {
                     $return = true;
                 }
 
@@ -200,15 +197,15 @@ abstract class UpgraderController {
             foreach ( $available_scripts as $script ) {
                 $group = $script->getGroup( );
 
-                $response .= '<li upgrade_group="' . $group . '" upgrade_action="start_upgrade" class="not_done">' . __( "Start Group upgrade" ) . '</li>';
+                $response .= '<li upgrade_what="'.$_REQUEST['what'].'" upgrade_group="' . $group . '" upgrade_action="start_upgrade" class="not_done">' . __( "Start Group upgrade" ) . '</li>';
 
                 if ( $script->getActions( ) ) {
                     foreach ( $script->getActions() as $action => $description ) {
-                        $response .= '<li upgrade_group="' . $group . '" upgrade_action="' . $action . '" class="not_done">' . ($description) . '</li>';
+                        $response .= '<li upgrade_what="'.$_REQUEST['what'].'" upgrade_group="' . $group . '" upgrade_action="' . $action . '" class="not_done">' . ($description) . '</li>';
                     }
                 }
 
-                $response .= '<li upgrade_group="' . $group . '" upgrade_action="end_upgrade" class="not_done">' . __( "End Group upgrade" ) . '</li>';
+                $response .= '<li upgrade_what="'.$_REQUEST['what'].'" upgrade_group="' . $group . '" upgrade_action="end_upgrade" class="not_done">' . __( "End Group upgrade" ) . '</li>';
 
             }
             $response .= '</ul>';

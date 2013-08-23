@@ -1,36 +1,20 @@
 <?php
 
-class MyUpgrade_0001 extends UpgradeScriptModel {
-    /**
-     * Initial system version
-     *
-     * @var string
-     */
+class MyUpgrade_0001 extends UpgraderScriptModel {
+
     public $from_version = '0.1';
 
-    /**
-     * Final system version
-     *
-     * @var string
-     */
     public $to_version = '1.0';
 
-    /**
-     * Return script actions
-     *
-     * @param void
-     * @return array
-     */
     function getActions( ) {
         // array('action', 'description');
-        return array(
-            'update_existing_tables' => 'Upgrade_0001. You can write what you want',
-        );
-    }// getActions
+        return array( 'update_existing_tables' => 'Upgrade_0001. You can write what you want', );
+    }
 
     function update_existing_tables( ) {
         return true;
-        return 'Error'; // otherwise
+        // otherwise
+        return 'Generic Error';
     }
 
 }

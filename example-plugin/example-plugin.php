@@ -20,34 +20,17 @@ define( 'MY_UPGRADER_PATH', '/upgrader' );
 // you need to move it inside your plugin directory
 include_once MY_UPGRADER_PATH . '/upgrader.php';
 
-class MyPluginUpgrader extends UpgraderController {
-    protected $plugin = MY_PLUGIN;
-
-    protected $upgrader_path = MY_UPGRADER_PATH;
-
-    protected $files_version = MY_PLUGIN_FILES_VERSION;
+class MyPluginUpgrader extends UpgraderModel {
 
     private $detected_previously_installed = true;
 
     public function __construct( ) {
-        parent::__construct( );
-    }
-
-    // even more checks?
-    public function worth_upgrading( ) {
-        $result = parent::worth_upgrading( );
-
-        // try guessing the version
-        if ( $result === false ) {
-            // let's check somewhere (in the DB?) which version is installed
-            // might be a new installation, here you can do more check to guess the version installed
-            if ( $this->detected_previously_installed ) {
-                $return = true;
-            }
-            // otherwise it's a fresh installation
-        }
-
-        return $result;
+        $args = array(
+            'plugin' => MY_PLUGIN,
+            'files_version' => MY_PLUGIN_FILES_VERSION,
+            'upgrader_path' => MY_UPGRADER_PATH,
+        );
+        parent::__construct( $args );
     }
 
     /**
@@ -67,4 +50,4 @@ class MyPluginUpgrader extends UpgraderController {
 
 }
 
-new MyPluginUpgrader( );
+UpgraderManager::add_upgrader( new MyPluginUpgrader( ) );

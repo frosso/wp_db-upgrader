@@ -8,3 +8,27 @@ I wrote a couple of plugins, but dealing with upgrades is a pain in the ass. Now
 I included a plugin as an example about how to use my code. You need to include the *upgrader* directory in it.
 
 I wrote this plugin primarly for myself, but any contribution is very welcome.
+
+## FAQ
+
+**Will it work if other plugins are using this library?**
+
+Yes, it is designed to work this way.
+
+**My features are not implemented in a plugin. Will it work?**
+
+Unfortunately, at the moment it's designed to wok only with plugins.
+
+**Where should I put the *upgrader* folder?**
+
+You can put it wherever you want to, as long as it stays inside your plugin directory and that you change the *'upgrader_path'* argument when instantiating the *UpgraderModel* class (see *example-plugin.php*)
+
+**Do I have to extend the *UpgraderModel* to make it work?**
+
+No, you don't need to. But you need to instantiate it with the right parameters. Example:
+
+    $args = array(
+       'plugin' => __FILE__,
+       'files_version' => 1.0,
+    );
+    UpgraderManager::add_upgrader( new UpgraderModel( $args ) );
